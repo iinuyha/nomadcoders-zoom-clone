@@ -21,4 +21,9 @@ const server = http.createServer(app); // "http://localhost:3000"에서 실행
 const wss = new WebSocket.Server({ server }); // "ws://localhost:3000"에서 실행
 // ➡️ 두 개의 프로토콜(http, websoket이 같은 포트를 사용함)
 
+// 웹소켓과 연결시, 소켓 실행
+wss.on("connection", (soket) => {
+  console.log(soket); // 요기서 soket은 연결된 브라우저를 뜻함
+});
+
 server.listen(3000, handleListen);
