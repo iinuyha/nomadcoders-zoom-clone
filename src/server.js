@@ -1,5 +1,8 @@
+import http from "http";
+import WebSocket from "ws";
 import express from "express";
 
+// http 프로토콜이 아닌, ws 프로토콜을 다루도록
 const app = express();
 
 // Node.js 에서 사용하는 템플릿 엔진 - ejs, pug, ..중 pug 사용
@@ -12,4 +15,10 @@ app.get("/*", (req, res) => res.redirect("/")); // 사용자가 어떤 경로로
 
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 
-app.listen(3000, handleListen);
+// http 프로토콜을 사용하는 서버 생성
+const server = http.createServer(app); // "http://localhost:3000"에서 실행
+// http서버 위에 웹소켓 프로토콜을 사용하는 서버 생성
+const wss = new WebSocket.Server({ server }); // "ws://localhost:3000"에서 실행
+// ➡️ 두 개의 프로토콜(http, websoket이 같은 포트를 사용함)
+
+server.listen(3000, handleListen);
