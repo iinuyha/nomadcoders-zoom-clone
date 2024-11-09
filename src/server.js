@@ -30,6 +30,17 @@ io.on("connection", (socket) => {
     done();
     socket.to(roomName).emit("welcome"); // 자신이 아닌 모든 브라우저에 대해서 welcome이벤트를 발생시키기
   });
+  // 소켓의 연결이 해제되면 발생되는 것들
+  socket.on("disconnecting", () => {
+    // 각 채팅룸에 대해서 bye 이벤트를 발생시키기
+    socket.rooms.forEach((room) => {
+      socket.to(room).emit("bye");
+    });
+  }); // 자신이 아닌 모든 브라우저에 대해서 bye 이벤트를 발생시키기
+  socket.on("new_message", (msg, room, done) => {
+    socket.to(room).emit("new_message", msg);
+    done();
+  });
 });
 
 // ➡️ 두 개의 프로토콜(http, websoket이 같은 포트를 사용함)

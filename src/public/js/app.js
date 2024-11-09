@@ -20,6 +20,18 @@ function showRoom() {
   room.hidden = false;
   const h3 = room.querySelector("h3");
   h3.innerText = `Room ${roomName}`;
+  const form = room.querySelector("form");
+  form.addEventListener("submit", handleMessageSubmit);
+}
+
+function handleMessageSubmit(event) {
+  event.preventDefault();
+  const input = room.querySelector("input");
+  const value = input.value;
+  socket.emit("new_message", input.value, roomName, () => {
+    addMessage(`You: ${value}`);
+  });
+  input.value = "";
 }
 
 function handleRoomSubmit(event) {
@@ -34,3 +46,10 @@ form.addEventListener("submit", handleRoomSubmit);
 
 // 웰컴 이벤트가 실행이 되면 addMessage 함수를 실행
 socket.on("welcome", () => addMessage("Someone joined!"));
+
+// 바이 이벤트가 실행이 되면 addMessage 함수를 실행
+socket.on("bye", () => addMessage("Someone left ㅜㅜ"));
+
+socket.on("new_message", (msg) => {
+  addMessage(msg);
+});
