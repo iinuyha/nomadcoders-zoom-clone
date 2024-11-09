@@ -8,6 +8,13 @@ room.hidden = true;
 
 let roomName;
 
+function addMessage(msg) {
+  const ul = room.querySelector("ul");
+  const li = document.createElement("li");
+  li.innerText = msg;
+  ul.appendChild(li);
+}
+
 function showRoom() {
   welcome.hidden = true;
   room.hidden = false;
@@ -24,3 +31,6 @@ function handleRoomSubmit(event) {
 }
 
 form.addEventListener("submit", handleRoomSubmit);
+
+// 웰컴 이벤트가 실행이 되면 addMessage 함수를 실행
+socket.on("welcome", () => addMessage("Someone joined!"));

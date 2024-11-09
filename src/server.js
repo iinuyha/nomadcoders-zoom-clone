@@ -28,6 +28,7 @@ io.on("connection", (socket) => {
   socket.on("enter_room", (roomName, done) => {
     socket.join(roomName); // 해당 채팅룸에 참가
     done();
+    socket.to(roomName).emit("welcome"); // 자신이 아닌 모든 브라우저에 대해서 welcome이벤트를 발생시키기
   });
 });
 
