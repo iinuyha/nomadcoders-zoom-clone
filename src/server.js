@@ -21,7 +21,14 @@ const httpServer = http.createServer(app); // "http://localhost:3000"에서 실�
 const io = SocketIO(httpServer);
 
 io.on("connection", (socket) => {
-  console.log(socket);
+  socket.onAny((event) => {
+    console.log(`Socket Event: ${event}`);
+  });
+  // 클라이언트에서 소켓io의 emit을 통해 데이터를 전송하면 이벤트명, 데이터, 함수까지 커스텀 및 전달이 가능
+  socket.on("enter_room", (roomName, done) => {
+    socket.join(roomName); // 해당 채팅룸에 참가
+    done();
+  });
 });
 
 // ➡️ 두 개의 프로토콜(http, websoket이 같은 포트를 사용함)
