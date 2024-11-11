@@ -60,10 +60,18 @@ function handleMessageSubmit(event) {
 }
 
 // welcome 이벤트가 실행이 되면 addMessage 함수를 실행
-socket.on("welcome", (user) => addMessage(`${user}님이 참여했습니다!`));
+socket.on("welcome", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
+  addMessage(`${user}님이 참여했습니다!`);
+});
 
 // bye 이벤트가 실행이 되면 addMessage 함수를 실행
-socket.on("bye", (user) => addMessage(`${user}님이 퇴장했습니다.`));
+socket.on("bye", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
+  addMessage(`${user}님이 퇴장했습니다.`);
+});
 
 // new_message 이벤트가 실행이 되면 addMessage 함수 실행
 socket.on("new_message", (msg) => {

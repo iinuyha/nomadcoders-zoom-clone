@@ -44,11 +44,15 @@ io.on("connection", (socket) => {
     console.log(`Socket Event: ${event}`);
   });
 
+  function countRoom(roomName) {
+    return io.sockets.adapter.rooms.get(roomName)?.size;
+  }
+
   // "enter_room"이벤트가 발생되면
   socket.on("enter_room", (roomName, done) => {
     socket.join(roomName); // roomName이라는 이름의 방에 현재 소켓(클라이언트)을 참여시킴
     done();
-    socket.to(roomName).emit("welcome", socket.nickname); // 특정 방(roomName)에 있는 클라이언트들(자신 제외)에게만 welcome 이벤트를 전송
+    socket.to(roomName).emit("welcome", socket.nickname, countRoom(roomName)); // 특정 방(roomName)에 있는 클라이언트들(자신 제외)에게만 welcome 이벤트를 전송
     io.sockets.emit("room_change", publicRooms()); // "room_change" 이벤트를 모두에게 발생시킴
   });
 
@@ -56,7 +60,7 @@ io.on("connection", (socket) => {
   socket.on("disconnecting", () => {
     // 각각의 채팅룸에 대해서 bye 이벤트를 발생시키기
     socket.rooms.forEach((room) => {
-      socket.to(room).emit("bye", socket.nickname);
+      socket.to(room).emit("bye", socket.nickname, countRoom(room) - 1);
     });
   }); // 자신이 아닌 모든 브라우저에 대해서 bye 이벤트를 발생시키기
 
